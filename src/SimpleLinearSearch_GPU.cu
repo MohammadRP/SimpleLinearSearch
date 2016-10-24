@@ -16,6 +16,7 @@
 #include "LinearSearch.h"
 #include "LinearSearch_CPU.h"
 #include "LinearSearch_GPU.h"
+#include "MyLinearSearch_GPU.h"
 
 int main(void) {
 
@@ -28,6 +29,8 @@ int main(void) {
 	search_cpu();
 
 	search_gpu();
+
+	mySearch_gpu();
 
 	return 0;
 }

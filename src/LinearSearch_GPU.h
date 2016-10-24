@@ -8,14 +8,9 @@
 #ifndef LINEARSEARCH_GPU_H_
 #define LINEARSEARCH_GPU_H_
 
+#include "LinearSearch_Common.h"
 #include "LinearSearch.h"
 
-#define BATCH_SIZE			32
-#define NUM_ITER			(NUM_TUPLES / BATCH_SIZE)
-
-#define THREADS_PER_BLOCK		32
-#define BLOCKS_PER_GRID			1024
-#define RULES_PER_BLOCK			32
 
 rule_t *rules_dev;
 tuple_t *tuples_dev;

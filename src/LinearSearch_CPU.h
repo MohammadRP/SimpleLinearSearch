@@ -15,7 +15,7 @@
 #include <memory.h>
 #include <time.h>
 
-#include "LinearSearch.h"
+#include "LinearSearch_Common.h"
 
 int search_cpu(void) {
 	printf("\n\nSearching %d Tuple(s) in %d Rule(s) on CPU ...\n", NUM_TUPLES,
@@ -31,7 +31,7 @@ int search_cpu(void) {
 		for (r = 0; r < NUM_RULES; r++) {
 			match = 1;
 			for (f = 0; f < NUM_FIELDS; f++) {
-				if ((tuples[t][f] & rules[r].mask[f]) != rules[r].tuple[f]){
+				if ((tuples[t][f] & rules[r].mask[f]) != rules[r].tuple[f]) {
 					match = 0;
 					break;
 				}
