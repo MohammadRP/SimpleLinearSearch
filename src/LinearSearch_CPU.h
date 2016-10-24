@@ -24,7 +24,6 @@ int search_cpu(void) {
 
 	struct timespec t1, t2;
 	uint8_t match;
-	int i;
 	int r, t, f;
 
 	clock_gettime(CLOCK, &t1);
@@ -32,8 +31,10 @@ int search_cpu(void) {
 		for (r = 0; r < NUM_RULES; r++) {
 			match = 1;
 			for (f = 0; f < NUM_FIELDS; f++) {
-				if ((tuples[t][f] & rules[r].mask[f]) != rules[r].tuple[f])
+				if ((tuples[t][f] & rules[r].mask[f]) != rules[r].tuple[f]){
 					match = 0;
+					break;
+				}
 			}
 			if (match == 1) {
 				if (results[t] == LOOKUP_MISS) {
