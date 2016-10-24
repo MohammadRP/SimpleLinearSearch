@@ -14,7 +14,7 @@
 #define NUM_ITER			(NUM_TUPLES / BATCH_SIZE)
 
 #define THREADS_PER_BLOCK		32
-#define BLOCKS_PER_GRID			16
+#define BLOCKS_PER_GRID			1024
 #define RULES_PER_BLOCK			32
 
 rule_t *rules_dev;
@@ -36,17 +36,18 @@ __global__ void LinearSearch_Kernel(rule_t *rules, tuple_t *tuples,
 	int rule_offset = blockIdx.x * RULES_PER_BLOCK;
 
 	while (rule_offset < NUM_RULES) {
-
-		if (threadIdx.x == 0) {
-			memcpy(block_rules, &rules[rule_offset],
-			RULES_PER_BLOCK * sizeof(rule_t));
+		t = threadIdx.x;
+		while (t < RULES_PER_BLOCK) {
+			block_rules[t] = rules[rule_offset + t];
+			t += blockDim.x;
 		}
 		__syncthreads();
 
 		t = threadIdx.x;
 
 		while (t < BATCH_SIZE) {
-			memcpy(&thread_tuple, &tuples[t], sizeof(tuple_t));
+			for (f = 0; f < NUM_FIELDS; f++)
+				thread_tuple[f] = tuples[t][f];
 			rIdx = -1;
 			rPri = -1;
 			for (r = 0; r < RULES_PER_BLOCK && (r + rule_offset) < NUM_RULES;
@@ -146,9 +147,9 @@ int search_gpu(void) {
 
 #ifdef SHOW_SEARCH_RESULTS
 	for (i = 0; i < NUM_RESULTS; i++)
-		if (results_host[i] >= 0)
-			printf("tuple %d matched with rule %d\n", i,
-					results_host[i] & 0x0000FFFF);
+	if (results_host[i] >= 0)
+	printf("tuple %d matched with rule %d\n", i,
+			results_host[i] & 0x0000FFFF);
 #endif
 
 	printf("Done. Linear Search takes %f ms on GPU, per Batch = %f ms\n",
